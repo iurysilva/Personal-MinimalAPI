@@ -22,26 +22,26 @@ namespace DemoMinimalAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DemoMinimalAPI.Models.Fornecedor", b =>
+            modelBuilder.Entity("DemoMinimalAPI.Models.Supplier", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Ativo")
+                    b.Property<bool>("Active")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Documento")
+                    b.Property<string>("Document")
                         .IsRequired()
                         .HasColumnType("varchar(14)");
 
-                    b.Property<string>("Nome")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(200)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Fornecedores", (string)null);
+                    b.ToTable("Suppliers", (string)null);
                 });
 #pragma warning restore 612, 618
         }

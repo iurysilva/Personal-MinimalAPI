@@ -7,25 +7,25 @@ namespace DemoMinimalAPI.Data
     {
         public MinimalContextDb(DbContextOptions<MinimalContextDb> options) : base(options) { }
 
-        public DbSet<Fornecedor> Fornecedores { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Fornecedor>()
+            modelBuilder.Entity<Supplier>()
                 .HasKey(p => p.Id);
 
-            modelBuilder.Entity<Fornecedor>()
-                .Property(p => p.Nome)
+            modelBuilder.Entity<Supplier>()
+                .Property(p => p.Name)
                 .IsRequired()
                 .HasColumnType("varchar(200)");
 
-            modelBuilder.Entity<Fornecedor>()
-                .Property(p => p.Documento)
+            modelBuilder.Entity<Supplier>()
+                .Property(p => p.Document)
                 .IsRequired()
                 .HasColumnType("varchar(14)");
 
-            modelBuilder.Entity<Fornecedor>()
-                .ToTable("Fornecedores");
+            modelBuilder.Entity<Supplier>()
+                .ToTable("Suppliers");
 
             base.OnModelCreating(modelBuilder);
         }
