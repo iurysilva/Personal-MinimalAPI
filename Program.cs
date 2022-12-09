@@ -1,6 +1,7 @@
 using DemoMinimalAPI.Data;
 using DemoMinimalAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using MiniValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,5 +39,22 @@ app.MapGet("/supplier/{id}", async (Guid id, MinimalContextDb context) =>
     .Produces(StatusCodes.Status404NotFound)
     .WithName("GetSupplierById")
     .WithTags("Supplier");
+
+app.MapPost("/supplier", async (MinimalContextDb context, Supplier supplier) =>
+{
+    if (!MiniValidator.TryValidate(supplier, out var errors))
+        return Results.ValidationProblem(errors);
+    context.Suppliers.Add(supplier);
+    var result = await context.SaveChangesAsync(); 
+
+    return result > 0
+        //Results.Created($"/supplier/{supplier.Id}", supplier);
+        ?Results.CreatedAtRoute("GetSuppliersById", new {id = supplier.Id }, supplier)
+        :Results.BadRequest("There was a problem saving the registry");
+}).ProducesValidationProblem()
+.Produces<Supplier>(StatusCodes.Status201Created)
+.Produces(StatusCodes.Status400BadRequest)
+.WithName("PostSupplier")
+.WithTags("Supplier");
 
 app.Run();
