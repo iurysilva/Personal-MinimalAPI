@@ -1,3 +1,4 @@
+using Azure.Core;
 using DemoMinimalAPI.Data;
 using DemoMinimalAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -55,6 +56,43 @@ app.MapPost("/supplier", async (MinimalContextDb context, Supplier supplier) =>
 .Produces<Supplier>(StatusCodes.Status201Created)
 .Produces(StatusCodes.Status400BadRequest)
 .WithName("PostSupplier")
+.WithTags("Supplier");
+
+app.MapPut("/supplier/{id}", async (Guid id, MinimalContextDb context, Supplier supplier) =>
+{
+    var targetSupplier = await context.Suppliers.FindAsync(id);
+    if (targetSupplier == null) return Results.NotFound();
+
+    if (!MiniValidator.TryValidate(supplier, out var errors))
+        return Results.ValidationProblem(errors);
+    context.Suppliers.Update(supplier);
+    var result = await context.SaveChangesAsync();
+
+    return result > 0
+    ? Results.NoContent()
+    : Results.BadRequest("There was a problem saving the registry");
+
+}).ProducesValidationProblem()
+.Produces(StatusCodes.Status204NoContent)
+.Produces(StatusCodes.Status400BadRequest)
+.WithName("PutSupplier")
+.WithTags("Supplier");
+
+app.MapDelete("/supplier/{id}", async (Guid id, MinimalContextDb context) =>
+{
+    var supplier = await context.Suppliers.FindAsync(id);
+    if (supplier == null) return Results.NotFound();
+
+    context.Suppliers.Remove(supplier);
+    var result = await context.SaveChangesAsync();
+
+    return result > 0
+     ? Results.NoContent()
+     : Results.BadRequest("There was a problem saving the registry");
+})
+.Produces(StatusCodes.Status204NoContent)
+.Produces(StatusCodes.Status404NotFound)
+.WithName("DeleteSupplier")
 .WithTags("Supplier");
 
 app.Run();
