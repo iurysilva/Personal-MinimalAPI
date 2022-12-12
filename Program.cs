@@ -50,7 +50,7 @@ app.MapPost("/supplier", async (MinimalContextDb context, Supplier supplier) =>
 
     return result > 0
         //Results.Created($"/supplier/{supplier.Id}", supplier);
-        ?Results.CreatedAtRoute("GetSuppliersById", new {id = supplier.Id }, supplier)
+        ?Results.CreatedAtRoute("PostSupplier", new {id = supplier.Id }, supplier)
         :Results.BadRequest("There was a problem saving the registry");
 }).ProducesValidationProblem()
 .Produces<Supplier>(StatusCodes.Status201Created)
